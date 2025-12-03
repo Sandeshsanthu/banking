@@ -49,28 +49,15 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCS_SA_KEY }}
 
-      - name: Set current timestamp
-        id: timestamp
-        run: echo "ts=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-
-      - name: Find built jar file
-        id: jarfile
-        run: |
-            JAR=$(ls build/libs/${{ matrix.dir }}*SNAPSHOT.jar | head -n 1)
-            echo "jar=$JAR" >> $GITHUB_OUTPUT
-            working-directory: ${{ matrix.dir }}
-          
-      
-
       - name: Set up gcloud for GCS upload
         uses: google-github-actions/setup-gcloud@v2
         with:
           export_default_credentials: true
           project_id: sapient-reducer-477808-m0
 
-      - name: Upload build artifact to GCS bucket (timestamped)
+      - name: Upload build artifact to GCS bucket
         run: |
-          gsutil cp "${{ steps.jarfile.outputs.jar }}" "gs://artifacts-javas/${{ matrix.dir }}/${{ matrix.dir }}-${{ steps.timestamp.outputs.ts }}.jar"
+          gsutil cp build/libs/${{ matrix.dir }}*SNAPSHOT.jar gs://artifacts-javas/${{ matrix.dir }}/
         working-directory: ${{ matrix.dir }}
 
       - name: Log in to DockerHub
