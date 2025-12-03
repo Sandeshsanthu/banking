@@ -1,16 +1,25 @@
+name: Build and Upload Artifacts to GCS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: [
-        'core-banking-service',
-        'internet-banking-config-server',
-        'internet-banking-fund-transfer-service',
-        'internet-banking-user-service',
-        'internet-banking-utility-payment-service',
-        'internet-banking-service-registry',
-        'internet-banking-api-gateway'
-      ] }
+      matrix:
+        dir: [
+          'core-banking-service',
+          'internet-banking-config-server',
+          'internet-banking-fund-transfer-service',
+          'internet-banking-user-service',
+          'internet-banking-utility-payment-service',
+          'internet-banking-service-registry',
+          'internet-banking-api-gateway'
+        ]
 
     permissions:
       contents: read
