@@ -1,11 +1,3 @@
-name: CI For Concept Microservice
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,11 +11,13 @@ jobs:
         'internet-banking-service-registry',
         'internet-banking-api-gateway'
       ] }
+
     permissions:
       contents: read
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -37,60 +31,13 @@ jobs:
         run: ./gradlew build -x test
         working-directory: ${{ matrix.dir }}
 
-      - uses: actions/upload-artifact@v4
+      - name: Set up gcloud for GCS upload
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          name: ${{ matrix.dir }}-artifacts
-          path: |
-            ${{ matrix.dir }}/build/libs/${{ matrix.dir }}*SNAPSHOT.jar
-            ${{ matrix.dir }}/Dockerfile
-            ${{ matrix.dir }}/wait-for-it.sh
-          retention-days: 1
-          overwrite: true
+          service_account_key: ${{ secrets.GCS_SA_KEY }}
+          export_default_credentials: true
 
-  docker_publish:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix: { dir: [
-        'core-banking-service',
-        'internet-banking-config-server',
-        'internet-banking-fund-transfer-service',
-        'internet-banking-user-service',
-        'internet-banking-utility-payment-service',
-        'internet-banking-service-registry',
-        'internet-banking-api-gateway'
-      ] }
-    permissions:
-      contents: read
-      packages: write
-    needs: build
-
-    steps:
-      - name: Download latest build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.dir }}-artifacts
-      - name: Move artifacts to the correct directory
-        shell: bash
+      - name: Upload build artifact to GCS bucket
         run: |
-          ls -lrt
-          mkdir -p ${{ matrix.dir }}-downloaded-artifacts
-          mv build ${{ matrix.dir }}-downloaded-artifacts
-          mv Dockerfile ${{ matrix.dir }}-downloaded-artifacts
-          mv wait-for-it.sh ${{ matrix.dir }}-downloaded-artifacts
-
-      - name: Validate moved artifacts
-        run: ls -lrt
-        working-directory: ${{ matrix.dir }}-downloaded-artifacts
-
-      - name: Build Docker images
-        run: docker build -t javatodev/${{ matrix.dir }} .
-        working-directory: ${{ matrix.dir }}-downloaded-artifacts
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Push Docker image to GitHub Container Registry
-        run: docker push javatodev/${{ matrix.dir }}
+          gsutil cp build/libs/${{ matrix.dir }}*SNAPSHOT.jar gs://artifacts-javas/${{ matrix.dir }}/
+        working-directory: ${{ matrix.dir }}
