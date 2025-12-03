@@ -58,7 +58,7 @@ jobs:
         run: |
             JAR=$(ls build/libs/${{ matrix.dir }}*SNAPSHOT.jar | head -n 1)
             echo "jar=$JAR" >> $GITHUB_OUTPUT
-          working-directory: ${{ matrix.dir }}
+            working-directory: ${{ matrix.dir }}
           
       
 
