@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: internet-banking-fund-transfer-service
+spec:
+  selector:
+    app: internet-banking-fund-transfer-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.internetBankingFundTransferService.servicePort }}
+      targetPort: {{ .Values.internetBankingFundTransferService.containerPort }}
+  type: ClusterIP

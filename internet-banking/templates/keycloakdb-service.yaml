@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloakdb
+spec:
+  ports:
+    - port: {{ .Values.keycloakdb.servicePort }}
+      targetPort: {{ .Values.keycloakdb.containerPort }}
+  selector:
+    app: keycloakdb

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.internetBankingServiceRegistry.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.internetBankingServiceRegistry.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.internetBankingServiceRegistry.name }}
+    spec:
+      containers:
+        - name: {{ .Values.internetBankingServiceRegistry.name }}
+          image: {{ .Values.internetBankingServiceRegistry.image }}
+          ports:
+            - containerPort: {{ .Values.internetBankingServiceRegistry.containerPort }}

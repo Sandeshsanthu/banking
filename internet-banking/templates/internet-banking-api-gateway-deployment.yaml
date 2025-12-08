@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internet-banking-api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: internet-banking-api-gateway
+  template:
+    metadata:
+      labels:
+        app: internet-banking-api-gateway
+    spec:
+      containers:
+        - name: internet-banking-api-gateway
+          image: {{ .Values.internetBankingApiGateway.image }}
+          ports:
+            - containerPort: {{ .Values.internetBankingApiGateway.containerPort }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              ./wait-for-it.sh internet-banking-service-registry:8081 --timeout=50 -- \
+              ./wait-for-it.sh internet-banking-config-server:8090 --timeout=50 -- \
+              java -jar -Dspring.profiles.active=docker /app.jar

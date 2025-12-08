@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-core-db
+spec:
+  selector:
+    matchLabels:
+      app: mysql-core-db
+  template:
+    metadata:
+      labels:
+        app: mysql-core-db
+    spec:
+      containers:
+          - name: mysql
+            image: {{ .Values.mysql.image }}
+            env:
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: mysql-root-password
+                    key: password
+            ports:
+              - containerPort: {{ .Values.mysql.port }}
+            volumeMounts:
+              - name: mysql-data
+                mountPath: /var/lib/mysql
+              - name: mysql-initdb
+                mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-initdb
+          confiMap:
+            name: mysql-init

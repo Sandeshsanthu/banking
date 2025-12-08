@@ -5,6 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/JavatoDev-com/internet-banking-microservices-configurations.git
+#          uri: https://github.com/JavatoDev-com/internet-banking-microservices-configurations.git
+          uri: https://github.com/Sandeshsanthu/internet-banking-microservices-configurations.git
           search-paths: configuration
           default-label: main

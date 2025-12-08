@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-web
+  template:
+    metadata:
+      labels:
+        app: keycloak-web
+    spec:
+      containers:
+        - name: keycloak
+          image: "{{ .Values.keycloak_web.image }}"
+          env:
+            - name: KC_DB
+              value: "{{ .Values.keycloak_web.env.KC_DB }}"
+            - name: KC_DB_URL
+              value: "{{ .Values.keycloak_web.env.KC_DB_URL }}"
+            - name: KC_DB_USERNAME
+              value: "{{ .Values.keycloak_web.env.KC_DB_USERNAME }}"
+            - name: KC_DB_PASSWORD
+              value: "{{ .Values.keycloak_web.env.KC_DB_PASSWORD }}"
+            - name: KEYCLOAK_ADMIN
+              value: "{{ .Values.keycloak_web.env.KEYCLOAK_ADMIN }}"
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: "{{ .Values.keycloak_web.env.KEYCLOAK_ADMIN_PASSWORD }}"
+          command: {{ toJson .Values.keycloak_web.command }}
+          ports:
+            - containerPort: {{ .Values.keycloak_web.containerPort }}

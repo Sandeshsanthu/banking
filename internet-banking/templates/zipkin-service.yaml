@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.zipkin.servicePort }}
+      targetPort: {{ .Values.zipkin.containerPort }}
+      nodePort: 30941
+  selector:
+    app: zipkin

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init
+data:
+  privileges.sql: |-
+{{ .Files.Get "privileges.sql" | indent 4 }}
