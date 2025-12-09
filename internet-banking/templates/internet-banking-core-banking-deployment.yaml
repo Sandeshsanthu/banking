@@ -1,27 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: internet-banking-user-service
+  name: internet-core-banking-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: internet-banking-user-service
+      app: internet-core-banking-service
   template:
     metadata:
       labels:
-        app: internet-banking-user-service
+        app: internet-core-banking-service
     spec:
       containers:
-        - name: internet-banking-user-service
-          image: {{ .Values.internetBankingUserService.image }}
+        - name: internet-core-banking-service
+          image: {{ .Values.coreBankingService.image }}
           ports:
-            - containerPort: {{ .Values.internetBankingUserService.containerPort }}
-          command: [ "/bin/bash", "-c" ]
+            - containerPort: {{ .Values.coreBankingService.containerPort }}
+          command: ["/bin/bash", "-c"]
           args:
             - >
               ./wait-for-it.sh internet-banking-service-registry:8081 --timeout=50 -- true &&
               ./wait-for-it.sh internet-banking-config-server:8090 --timeout=50 -- true &&
               ./wait-for-it.sh mysql:3306 --timeout=50 -- true &&
               java -jar -Dspring.profiles.active=docker /app.jar
-              

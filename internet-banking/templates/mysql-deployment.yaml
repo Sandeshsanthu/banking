@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-core-db
+  name: mysql
 spec:
   selector:
     matchLabels:
-      app: mysql-core-db
+      app: mysql
   template:
     metadata:
       labels:
-        app: mysql-core-db
+        app: mysql
     spec:
       containers:
           - name: mysql

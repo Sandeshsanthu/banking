@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: internet-banking-utility-payment-service
+spec:
+  selector:
+    app: internet-banking-utility-payment-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.internetBankingUtilityPaymentService.servicePort }}
+      targetPort: {{ .Values.internetBankingUtilityPaymentService.containerPort }}
+  type: ClusterIP

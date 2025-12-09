@@ -22,5 +22,5 @@ spec:
             - >
               ./wait-for-it.sh internet-banking-service-registry:8081 --timeout=50 -- true &&
               ./wait-for-it.sh internet-banking-config-server:8090 --timeout=50 -- true &&
-              ./wait-for-it.sh mysql_core_db:3306 --timeout=50 -- true &&
+              ./wait-for-it.sh mysql:3306 --timeout=50 -- true &&
               java -jar -Dspring.profiles.active=docker /app.jar
