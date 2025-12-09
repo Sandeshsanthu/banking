@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: internet-banking-config-server
+  name: {{ .Values.internetBankingConfig.name }}
   labels:
-    app: internet-banking-config-server
+    app: {{ .Values.internetBankingConfig.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: internet-banking-config-server
+      app: {{ .Values.internetBankingConfig.name }}
   template:
     metadata:
       labels:
-        app: internet-banking-config-server
+        app: {{ .Values.internetBankingConfig.name }}
     spec:
       containers:
-        - name: internet-banking-config-server
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Values.internetBankingConfig.name }}
+          image: "{{ .Values.internetBankingConfig.image }}"
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.internetBankingConfig.containerPort }}
